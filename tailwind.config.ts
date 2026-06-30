@@ -91,6 +91,9 @@ const config: Config = {
         shimmer: {
           "100%": { transform: "translateX(100%)" },
         },
+        "spin-slow": {
+          to: { transform: "rotate(360deg)" },
+        },
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -105,6 +108,7 @@ const config: Config = {
         float: "float 6s ease-in-out infinite",
         "gradient-x": "gradient-x 6s ease infinite",
         shimmer: "shimmer 2s infinite",
+        "spin-slow": "spin-slow 14s linear infinite",
       },
     },
   },

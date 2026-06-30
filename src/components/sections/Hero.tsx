@@ -1,5 +1,4 @@
-import { lazy, Suspense, useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowRight, Download, Eye, Mail, MousePointerClick } from "lucide-react";
 import { SITE, TYPING_ROLES } from "@/constants/site";
 import { TypingText } from "@/components/common/TypingText";
@@ -10,29 +9,12 @@ import { Button } from "@/components/ui/button";
 import { scrollToId } from "@/hooks/useLenis";
 import { useMousePosition } from "@/hooks/useMousePosition";
 import { usePrefersReducedMotion, useIsDesktop } from "@/hooks/useMediaQuery";
-import { useDeferredMount } from "@/hooks/useDeferredMount";
 import { staggerContainer, fadeUp } from "@/utils/motion";
-
-const Scene3D = lazy(() => import("./hero/Scene3D"));
-
-/** Static fallback shown before/instead of the 3D sphere. */
-function OrbFallback() {
-  return (
-    <div className="relative flex h-full w-full items-center justify-center">
-      <div className="h-64 w-64 rounded-full bg-primary opacity-70 blur-2xl animate-float sm:h-80 sm:w-80" />
-      <div className="absolute h-56 w-56 rounded-full border border-foreground/20 sm:h-72 sm:w-72" />
-    </div>
-  );
-}
 
 export function Hero() {
   const reduced = usePrefersReducedMotion();
   const isDesktop = useIsDesktop();
   const { nx, ny } = useMousePosition(isDesktop && !reduced);
-
-  const visualRef = useRef<HTMLDivElement>(null);
-  const visualInView = useInView(visualRef, { margin: "200px" });
-  const show3D = useDeferredMount(visualInView && !reduced);
 
   return (
     <section
@@ -137,7 +119,6 @@ export function Hero() {
 
         {/* Visual */}
         <motion.div
-          ref={visualRef}
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.3 }}
@@ -149,14 +130,25 @@ export function Hero() {
           className="relative mx-auto aspect-square w-full max-w-md lg:max-w-none"
         >
           <FloatingTech />
-          <div className="relative h-full w-full">
-            {show3D ? (
-              <Suspense fallback={<OrbFallback />}>
-                <Scene3D />
-              </Suspense>
-            ) : (
-              <OrbFallback />
-            )}
+
+          {/* Glow halo behind portrait */}
+          <div className="absolute inset-[12%] -z-10 rounded-full bg-brand-violet/30 blur-[90px]" />
+
+          <div className="relative flex h-full w-full items-center justify-center">
+            <div className="relative aspect-square w-[78%] sm:w-[80%]">
+              {/* Rotating gradient ring */}
+              <div className="absolute -inset-[6px] rounded-full bg-gradient-to-tr from-brand-violet via-primary to-secondary opacity-80 blur-[2px] animate-spin-slow" />
+              <div className="absolute inset-0 overflow-hidden rounded-full border border-foreground/10 bg-card/40 shadow-2xl backdrop-blur">
+                <img
+                  src="/faizan.jpg"
+                  alt={SITE.name}
+                  width={512}
+                  height={512}
+                  loading="eager"
+                  className="h-full w-full object-cover object-top"
+                />
+              </div>
+            </div>
           </div>
         </motion.div>
       </div>
